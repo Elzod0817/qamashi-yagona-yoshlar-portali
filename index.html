@@ -1,0 +1,1487 @@
+<!DOCTYPE html>
+<html lang="uz" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Qamashi Yoshlar Portali</title>
+  <link rel="icon" type="image/png" href="https://gov.uz/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fgerb_in.8de8c8a8.png&w=256&q=75">
+
+  <!-- ── Fonts ───────────────────────────────────────────────────────────── -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+
+  <!-- ── Tailwind CSS ─────────────────────────────────────────────────────── -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- ── AOS.js (Animate On Scroll) ──────────────────────────────────────── -->
+  <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet" />
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+
+  <!-- ── Lucide Icons ─────────────────────────────────────────────────────── -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Sora', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] },
+          colors: {
+            accent:  { DEFAULT: '#22d3a5', dark: '#16a078' },
+            surface: { DEFAULT: '#0f1117', card: '#161b27', border: '#1f2937' },
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* ─── CSS Variables ──────────────────────────────────────────────────── */
+    :root {
+      --bg:           #f0f4f8;
+      --bg-card:      rgba(255,255,255,0.65);
+      --text:         #0d1117;
+      --text-muted:   #64748b;
+      --border:       rgba(0,0,0,0.08);
+      --accent:       #3c7fdc;
+      --accent-glow:  rgba(34,211,165,0.25);
+      --shadow:       rgba(0,0,0,0.08);
+      --hero-grad:    linear-gradient(135deg, #e0f7ef 0%, #d4eaf7 100%);
+    }
+    html.dark {
+      --bg:           #090c13;
+      --bg-card:      rgba(22,27,39,0.75);
+      --text:         #e8edf5;
+      --text-muted:   #8b98b1;
+      --border:       rgba(255,255,255,0.06);
+      --accent:       #22d3a5;
+      --accent-glow:  rgba(34,211,165,0.20);
+      --shadow:       rgba(0,0,0,0.4);
+      --hero-grad:    linear-gradient(135deg, #0f1a2e 0%, #0a1520 100%);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Sora', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      transition: background 0.4s ease, color 0.4s ease;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ─── Scrollbar ──────────────────────────────────────────────────────── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 99px; }
+
+    /* ─── Selection ──────────────────────────────────────────────────────── */
+    ::selection { background: var(--accent); color: #000; }
+
+    /* ─── Glass Card ─────────────────────────────────────────────────────── */
+    .glass {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(16px) saturate(1.6);
+      -webkit-backdrop-filter: blur(16px) saturate(1.6);
+      transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .glass:hover {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px var(--accent), 0 8px 40px var(--shadow);
+      transform: translateY(-3px);
+    }
+
+    /* ─── Accent Glow Button ─────────────────────────────────────────────── */
+    .btn-accent {
+      background: var(--accent);
+      color: #000;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      box-shadow: 0 0 20px var(--accent-glow);
+    }
+    .btn-accent:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 32px var(--accent-glow), 0 4px 16px rgba(0,0,0,0.2);
+    }
+    .btn-accent:active { transform: translateY(0); }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+    .btn-ghost:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* ─── Navbar ─────────────────────────────────────────────────────────── */
+    .navbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(20px) saturate(1.8);
+      -webkit-backdrop-filter: blur(20px) saturate(1.8);
+      transition: background 0.4s ease;
+    }
+
+    /* ─── Hero Section ───────────────────────────────────────────────────── */
+    .hero {
+      background: var(--hero-grad);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: 
+        radial-gradient(ellipse 60% 80% at 80% 50%, var(--accent-glow) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 60% at 10% 80%, rgba(99,179,237,0.10) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .hero-mesh {
+      position: absolute;
+      inset: 0;
+      background-image: 
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 50px 50px;
+      opacity: 0.4;
+      pointer-events: none;
+    }
+
+    /* ─── Language Pill ──────────────────────────────────────────────────── */
+    .lang-pill {
+      padding: 4px 10px;
+      border-radius: 99px;
+      cursor: pointer;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      transition: all 0.2s ease;
+      color: var(--text-muted);
+      border: 1px solid transparent;
+    }
+    .lang-pill.active {
+      background: var(--accent);
+      color: #000;
+      border-color: var(--accent);
+    }
+    .lang-pill:hover:not(.active) {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* ─── Theme Toggle ───────────────────────────────────────────────────── */
+    .theme-toggle {
+      width: 48px; height: 26px;
+      background: var(--border);
+      border-radius: 99px;
+      position: relative;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      transition: background 0.3s ease;
+      flex-shrink: 0;
+    }
+    .theme-toggle.dark-on { background: var(--accent); }
+    .theme-thumb {
+      width: 20px; height: 20px;
+      background: #fff;
+      border-radius: 50%;
+      position: absolute;
+      top: 2px; left: 2px;
+      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px;
+    }
+    .theme-toggle.dark-on .theme-thumb { transform: translateX(22px); }
+
+    /* ─── News Card ──────────────────────────────────────────────────────── */
+    .news-card {
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    .news-card-img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      background: linear-gradient(135deg, #1a2540 0%, #0f1a2e 100%);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2.5rem;
+    }
+    .news-date-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 10px;
+      background: var(--accent-glow);
+      color: var(--accent);
+      border-radius: 99px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      font-family: 'JetBrains Mono', monospace;
+      border: 1px solid rgba(34,211,165,0.2);
+    }
+
+    /* ─── Modal ──────────────────────────────────────────────────────────── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(8px);
+      z-index: 200;
+      display: flex; align-items: center; justify-content: center;
+      padding: 1rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .modal-box {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2rem;
+      width: 100%;
+      max-width: 580px;
+      max-height: 90vh;
+      overflow-y: auto;
+      transform: scale(0.92) translateY(20px);
+      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .modal-overlay.open .modal-box {
+      transform: scale(1) translateY(0);
+    }
+
+    /* ─── Form Fields ────────────────────────────────────────────────────── */
+    .field {
+      width: 100%;
+      padding: 10px 14px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      font-family: 'Sora', sans-serif;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .field:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+    .field::placeholder { color: var(--text-muted); }
+    textarea.field { resize: vertical; min-height: 90px; }
+
+    /* ─── Tab Switcher ───────────────────────────────────────────────────── */
+    .tab-btn {
+      padding: 6px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      color: var(--text-muted);
+      background: transparent;
+      border: none;
+    }
+    .tab-btn.active {
+      background: var(--accent);
+      color: #000;
+    }
+
+    /* ─── Toast ──────────────────────────────────────────────────────────── */
+    #toast-container {
+      position: fixed;
+      bottom: 24px; right: 24px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      pointer-events: none;
+    }
+    .toast {
+      padding: 12px 18px;
+      border-radius: 12px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      backdrop-filter: blur(16px);
+      border: 1px solid;
+      display: flex; align-items: center; gap: 10px;
+      pointer-events: all;
+      animation: toastIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+      max-width: 340px;
+    }
+    .toast.success { background: rgba(34,211,165,0.15); border-color: rgba(34,211,165,0.4); color: #22d3a5; }
+    .toast.error   { background: rgba(239,68,68,0.15);  border-color: rgba(239,68,68,0.4);  color: #f87171; }
+    .toast.info    { background: rgba(99,179,237,0.15); border-color: rgba(99,179,237,0.4); color: #63b3ed; }
+    .toast.out { animation: toastOut 0.3s ease forwards; }
+    @keyframes toastIn  { from { opacity:0; transform:translateX(40px); } to { opacity:1; transform:translateX(0); } }
+    @keyframes toastOut { from { opacity:1; transform:translateX(0); } to { opacity:0; transform:translateX(40px); } }
+
+    /* ─── Skeleton ───────────────────────────────────────────────────────── */
+    .skeleton {
+      background: linear-gradient(90deg, var(--border) 25%, rgba(255,255,255,0.05) 50%, var(--border) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      border-radius: 8px;
+    }
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+    /* ─── Admin Badge ────────────────────────────────────────────────────── */
+    .admin-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 3px 10px;
+      background: rgba(250,204,21,0.15);
+      border: 1px solid rgba(250,204,21,0.3);
+      color: #facc15;
+      border-radius: 99px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+    }
+
+    /* ─── Fade section transitions ───────────────────────────────────────── */
+    .fade-in { animation: fadeIn 0.5s ease forwards; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* ─── Number counter ─────────────────────────────────────────────────── */
+    .stat-number { font-family: 'JetBrains Mono', monospace; }
+
+    /* ─── Footer ─────────────────────────────────────────────────────────── */
+    footer a:hover { color: var(--accent); }
+
+    /* ─── Responsive grid ─────────────────────────────────────────────────── */
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+    @media (max-width: 640px) {
+      .news-grid { grid-template-columns: 1fr; }
+      #toast-container { bottom: 16px; right: 16px; left: 16px; }
+      .toast { max-width: 100%; }
+    }
+
+    /* ─── Search bar ─────────────────────────────────────────────────────── */
+    .search-wrap {
+      position: relative;
+    }
+    .search-wrap .search-icon {
+      position: absolute;
+      left: 14px; top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+    .search-wrap input {
+      padding-left: 42px;
+    }
+
+    /* ─── Accent underline on section titles ─────────────────────────────── */
+    .section-title::after {
+      content: '';
+      display: block;
+      width: 48px; height: 3px;
+      background: var(--accent);
+      border-radius: 99px;
+      margin-top: 8px;
+    }
+
+    /* ─── Image upload preview ───────────────────────────────────────────── */
+    #img-preview {
+      width: 100%; height: 120px;
+      border-radius: 10px;
+      object-fit: cover;
+      border: 1px solid var(--border);
+      display: none;
+    }
+    #img-preview.visible { display: block; }
+
+    /* ─── Pill tag for lang in form ──────────────────────────────────────── */
+    .form-lang-btn {
+      padding: 4px 12px;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      background: transparent;
+    }
+    .form-lang-btn.active {
+      background: var(--accent);
+      color: #000;
+      border-color: var(--accent);
+    }
+
+    /* ─── Empty State ────────────────────────────────────────────────────── */
+    .empty-state {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--text-muted);
+    }
+
+    /* ─── Loader spinner ─────────────────────────────────────────────────── */
+    .spinner {
+      width: 20px; height: 20px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<!--  TOAST CONTAINER                                                        -->
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<div id="toast-container"></div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<!--  NAVBAR                                                                 -->
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<nav class="navbar px-4 md:px-8">
+  <div class="max-w-7xl mx-auto flex items-center justify-between h-16 gap-4">
+
+    <!-- Logo -->
+<a href="/" class="flex items-center gap-3 flex-shrink-0 group">
+    <img src="https://gov.uz/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fgerb_in.8de8c8a8.png&w=256&q=75" 
+         alt="Gerb" 
+         class="w-11 h-11 object-contain transition-transform duration-300 group-hover:scale-110">
+    
+    <div class="hidden sm:block">
+        <div class="font-bold text-sm leading-tight" style="color:var(--text)">Qamashi</div>
+        <div class="text-xs font-mono" style="color:var(--accent)">Yoshlar Portali</div>
+    </div>
+</a>
+
+    <!-- Nav Links (desktop) -->
+    <div class="hidden md:flex items-center gap-6 text-sm font-medium" style="color:var(--text-muted)">
+      <a href="#news" class="hover:text-[var(--accent)] transition-colors" data-i18n="nav_news">Yangiliklar</a>
+      <a href="#about" class="hover:text-[var(--accent)] transition-colors" data-i18n="nav_about">Haqida</a>
+      <a href="#contact" class="hover:text-[var(--accent)] transition-colors" data-i18n="nav_contact">Aloqa</a>
+    </div>
+
+    <!-- Right Controls -->
+    <div class="flex items-center gap-2 md:gap-3 flex-shrink-0">
+
+      <!-- Language Switcher -->
+      <div class="flex items-center gap-1">
+        <button class="lang-pill active" data-lang="uz">UZ</button>
+        <button class="lang-pill" data-lang="ru">RU</button>
+        <button class="lang-pill" data-lang="en">EN</button>
+      </div>
+
+      <!-- Theme Toggle -->
+      <div class="theme-toggle dark-on" id="theme-toggle" title="Toggle theme">
+        <div class="theme-thumb">🌙</div>
+      </div>
+
+      <!-- Admin Login / Logout -->
+      <div id="auth-area">
+        <button id="admin-login-btn"
+          class="btn-ghost text-xs px-3 py-1.5 rounded-lg flex items-center gap-1.5"
+          onclick="openLoginModal()">
+          <i data-lucide="lock" class="w-3 h-3"></i>
+          <span data-i18n="btn_login">Kirish</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<!--  HERO SECTION                                                           -->
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<section class="hero pt-28 pb-20 px-4 md:px-8">
+  <div class="hero-mesh"></div>
+  <div class="max-w-7xl mx-auto relative z-10">
+    <div class="max-w-3xl">
+      <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-mono font-semibold mb-6"
+        style="background:var(--accent-glow);color:var(--accent);border:1px solid rgba(34,211,165,0.2)">
+        <span class="w-2 h-2 rounded-full bg-[var(--accent)] animate-pulse"></span>
+        <span data-i18n="hero_tag">Qamashi tumani • Yoshlar portali</span>
+      </div>
+      <h1 class="text-4xl md:text-6xl font-extrabold leading-tight mb-5 tracking-tight" style="color:var(--text)" data-i18n="hero_title">
+        Yoshlarni <span style="color:var(--accent)">Kelajakka</span> ulash
+      </h1>
+      <p class="text-lg md:text-xl font-light leading-relaxed mb-8" style="color:var(--text-muted)" data-i18n="hero_sub">
+        Qamashi tumanining rasmiy yoshlar axborot portali — yangiliklar, imkoniyatlar va tadbirlar.
+      </p>
+      <div class="flex flex-wrap gap-3">
+        <a href="#news" class="btn-accent px-6 py-3 rounded-xl text-sm flex items-center gap-2">
+          <i data-lucide="newspaper" class="w-4 h-4"></i>
+          <span data-i18n="btn_news">Yangiliklar</span>
+        </a>
+        <button onclick="openLoginModal()" class="btn-ghost px-6 py-3 rounded-xl text-sm flex items-center gap-2">
+          <i data-lucide="shield" class="w-4 h-4"></i>
+          <span data-i18n="btn_admin">Admin Panel</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Floating Stats -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-16">
+      <div class="glass rounded-2xl p-4 text-center" data-aos="fade-up" data-aos-delay="0">
+        <div class="stat-number text-2xl font-bold" style="color:var(--accent)" id="stat-news">—</div>
+        <div class="text-xs mt-1" style="color:var(--text-muted)" data-i18n="stat_news">Yangiliklar</div>
+      </div>
+      <div class="glass rounded-2xl p-4 text-center" data-aos="fade-up" data-aos-delay="80">
+        <div class="stat-number text-2xl font-bold" style="color:var(--accent)">3</div>
+        <div class="text-xs mt-1" style="color:var(--text-muted)" data-i18n="stat_langs">Tillar</div>
+      </div>
+      <div class="glass rounded-2xl p-4 text-center" data-aos="fade-up" data-aos-delay="160">
+        <div class="stat-number text-2xl font-bold" style="color:var(--accent)">24/7</div>
+        <div class="text-xs mt-1" style="color:var(--text-muted)" data-i18n="stat_access">Ishlash vaqti</div>
+      </div>
+      <div class="glass rounded-2xl p-4 text-center" data-aos="fade-up" data-aos-delay="240">
+        <div class="stat-number text-2xl font-bold" style="color:var(--accent)">2026</div>
+        <div class="text-xs mt-1" style="color:var(--text-muted)" data-i18n="stat_year">Yil</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<!--  NEWS SECTION                                                           -->
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<section id="news" class="py-16 px-4 md:px-8">
+  <div class="max-w-7xl mx-auto">
+
+    <!-- Section Header -->
+    <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10">
+      <div>
+        <h2 class="text-2xl md:text-3xl font-bold section-title" style="color:var(--text)" data-i18n="section_news">
+          So'nggi Yangiliklar
+        </h2>
+      </div>
+
+      <!-- Search + Add Button -->
+      <div class="flex items-center gap-3">
+        <!-- Search -->
+        <div class="search-wrap">
+          <i data-lucide="search" class="search-icon w-4 h-4"></i>
+          <input type="text" id="search-input"
+            class="field w-56 text-sm"
+            placeholder="Qidirish..."
+            oninput="filterNews()"
+            data-i18n-placeholder="search_placeholder" />
+        </div>
+
+        <!-- Add button (admin only) -->
+        <button id="add-news-btn"
+          class="btn-accent px-4 py-2 rounded-xl text-sm items-center gap-2 hidden"
+          onclick="openNewsModal()">
+          <i data-lucide="plus" class="w-4 h-4"></i>
+          <span data-i18n="btn_add">Qo'shish</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- News Grid -->
+    <div id="news-grid" class="news-grid">
+      <!-- Skeleton loaders (shown during fetch) -->
+      <div class="news-card glass p-0">
+        <div class="skeleton w-full" style="height:180px"></div>
+        <div class="p-5 space-y-3">
+          <div class="skeleton h-3 w-24 rounded"></div>
+          <div class="skeleton h-5 w-4/5 rounded"></div>
+          <div class="skeleton h-4 w-full rounded"></div>
+          <div class="skeleton h-4 w-3/4 rounded"></div>
+        </div>
+      </div>
+      <div class="news-card glass p-0">
+        <div class="skeleton w-full" style="height:180px"></div>
+        <div class="p-5 space-y-3">
+          <div class="skeleton h-3 w-24 rounded"></div>
+          <div class="skeleton h-5 w-4/5 rounded"></div>
+          <div class="skeleton h-4 w-full rounded"></div>
+          <div class="skeleton h-4 w-3/4 rounded"></div>
+        </div>
+      </div>
+      <div class="news-card glass p-0">
+        <div class="skeleton w-full" style="height:180px"></div>
+        <div class="p-5 space-y-3">
+          <div class="skeleton h-3 w-24 rounded"></div>
+          <div class="skeleton h-5 w-4/5 rounded"></div>
+          <div class="skeleton h-4 w-full rounded"></div>
+          <div class="skeleton h-4 w-3/4 rounded"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<!--  ABOUT SECTION                                                          -->
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<section id="about" class="py-16 px-4 md:px-8" style="background:var(--bg-card);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+  <div class="max-w-7xl mx-auto">
+    <div class="grid md:grid-cols-2 gap-12 items-center">
+      <div data-aos="fade-right">
+        <h2 class="text-2xl md:text-3xl font-bold section-title mb-6" style="color:var(--text)" data-i18n="about_title">
+          Portal Haqida
+        </h2>
+        <p class="leading-relaxed mb-4" style="color:var(--text-muted);font-size:0.95rem" data-i18n="about_p1">
+          Qamashi Yoshlar Portali — tuman yoshlarini bir platformada birlashtirish uchun yaratilgan zamonaviy axborot tizimi.
+        </p>
+        <p class="leading-relaxed" style="color:var(--text-muted);font-size:0.95rem" data-i18n="about_p2">
+          Portalda eng so'nggi yangiliklar, imkoniyatlar, o'quv kurslari va yoshlar hayotiga oid barcha zaruriy ma'lumotlar jamlangan.
+        </p>
+      </div>
+      <div class="grid grid-cols-2 gap-4" data-aos="fade-left">
+        <div class="glass rounded-2xl p-5">
+          <i data-lucide="zap" class="w-6 h-6 mb-3" style="color:var(--accent)"></i>
+          <div class="font-semibold text-sm mb-1" style="color:var(--text)" data-i18n="feat_fast">Tez va ishonchli</div>
+          <div class="text-xs" style="color:var(--text-muted)" data-i18n="feat_fast_d">Real vaqtda yangilanib turadi</div>
+        </div>
+        <div class="glass rounded-2xl p-5">
+          <i data-lucide="globe" class="w-6 h-6 mb-3" style="color:var(--accent)"></i>
+          <div class="font-semibold text-sm mb-1" style="color:var(--text)" data-i18n="feat_lang">Ko'p tilli</div>
+          <div class="text-xs" style="color:var(--text-muted)" data-i18n="feat_lang_d">O'zbek, Rus, Ingliz tillarida</div>
+        </div>
+        <div class="glass rounded-2xl p-5">
+          <i data-lucide="shield-check" class="w-6 h-6 mb-3" style="color:var(--accent)"></i>
+          <div class="font-semibold text-sm mb-1" style="color:var(--text)" data-i18n="feat_sec">Xavfsiz</div>
+          <div class="text-xs" style="color:var(--text-muted)" data-i18n="feat_sec_d">JWT autentifikatsiya bilan himoyalangan</div>
+        </div>
+        <div class="glass rounded-2xl p-5">
+          <i data-lucide="smartphone" class="w-6 h-6 mb-3" style="color:var(--accent)"></i>
+          <div class="font-semibold text-sm mb-1" style="color:var(--text)" data-i18n="feat_mob">Mobil qulay</div>
+          <div class="text-xs" style="color:var(--text-muted)" data-i18n="feat_mob_d">Barcha qurilmalarda mukammal</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<!--  CONTACT SECTION                                                        -->
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<section id="contact" class="py-16 px-4 md:px-8">
+  <div class="max-w-7xl mx-auto text-center" data-aos="fade-up">
+    <h2 class="text-2xl md:text-3xl font-bold mb-4" style="color:var(--text)" data-i18n="contact_title">Aloqa</h2>
+    <p class="mb-8" style="color:var(--text-muted)" data-i18n="contact_sub">Murojaat uchun quyidagi kanallar orqali bog'laning</p>
+    <div class="flex flex-wrap justify-center gap-4">
+      <a href="tel:+998991180817" class="glass rounded-xl px-5 py-3 flex items-center gap-3 text-sm" style="color:var(--text)">
+        <i data-lucide="phone" class="w-4 h-4" style="color:var(--accent)"></i>
+        +998 99 118-08-17
+      </a>
+      <a href="mailto:info@qamashi-yoshlar.uz" class="glass rounded-xl px-5 py-3 flex items-center gap-3 text-sm" style="color:var(--text)">
+        <i data-lucide="mail" class="w-4 h-4" style="color:var(--accent)"></i>
+        info@qamashi-yoshlar.uz
+      </a>
+      <a href="#" class="glass rounded-xl px-5 py-3 flex items-center gap-3 text-sm" style="color:var(--text)">
+        <i data-lucide="map-pin" class="w-4 h-4" style="color:var(--accent)"></i>
+        <span data-i18n="contact_addr">Qamashi tumani, Qashqadaryo viloyati</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<!--  FOOTER                                                                 -->
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<footer class="px-4 md:px-8 py-8" style="border-top:1px solid var(--border)">
+  <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs" style="color:var(--text-muted)">
+    <div class="flex items-center gap-2">
+      <div class="w-6 h-6 rounded-lg btn-accent flex items-center justify-center text-black font-black text-xs">Q</div>
+      <span>Qamashi Yoshlar Portali © 2026</span>
+    </div>
+    <div class="flex items-center gap-1">
+      <span data-i18n="footer_built">Ishlab chiqildi</span>
+      <span style="color:var(--accent)">IT Center tomonidan</span>
+      <span data-i18n="footer_by">Qamashi tumani uchun</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<!--  MODAL: ADMIN LOGIN                                                     -->
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<div id="login-modal" class="modal-overlay" onclick="closeLoginModal(event)">
+  <div class="modal-box">
+    <div class="flex items-center justify-between mb-6">
+      <div>
+        <h3 class="text-xl font-bold" style="color:var(--text)" data-i18n="login_title">Admin Kirish</h3>
+        <p class="text-sm mt-1" style="color:var(--text-muted)" data-i18n="login_sub">Parolni kiriting</p>
+      </div>
+      <button onclick="closeLoginModal()" class="btn-ghost w-8 h-8 rounded-lg flex items-center justify-center text-sm">✕</button>
+    </div>
+
+    <div class="space-y-4">
+      <div>
+        <label class="text-xs font-semibold mb-2 block" style="color:var(--text-muted)" data-i18n="login_pass_label">Parol</label>
+        <input type="password" id="login-password" class="field" placeholder="••••••••"
+          onkeydown="if(event.key==='Enter') doLogin()" data-i18n-placeholder="login_pass_ph" />
+      </div>
+      <button id="login-submit" class="btn-accent w-full py-3 rounded-xl text-sm flex items-center justify-center gap-2" onclick="doLogin()">
+        <i data-lucide="log-in" class="w-4 h-4"></i>
+        <span data-i18n="btn_login_submit">Kirish</span>
+      </button>
+      <p id="login-error" class="text-xs text-center text-red-400 hidden" data-i18n="login_error">Noto'g'ri parol</p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<!--  MODAL: ADD / EDIT NEWS                                                 -->
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<div id="news-modal" class="modal-overlay" onclick="closeNewsModal(event)">
+  <div class="modal-box">
+    <div class="flex items-center justify-between mb-6">
+      <h3 id="news-modal-title" class="text-xl font-bold" style="color:var(--text)" data-i18n="modal_add">Yangilik Qo'shish</h3>
+      <button onclick="closeNewsModal()" class="btn-ghost w-8 h-8 rounded-lg flex items-center justify-center">✕</button>
+    </div>
+
+    <form id="news-form" onsubmit="submitNewsForm(event)" class="space-y-4">
+      <input type="hidden" id="form-id" value="" />
+
+      <!-- Language tabs for form -->
+      <div class="flex items-center gap-2 p-1 rounded-xl" style="background:var(--border)">
+        <button type="button" class="form-lang-btn active flex-1" data-form-lang="uz" onclick="switchFormLang('uz')">O'zbek</button>
+        <button type="button" class="form-lang-btn flex-1" data-form-lang="ru" onclick="switchFormLang('ru')">Русский</button>
+        <button type="button" class="form-lang-btn flex-1" data-form-lang="en" onclick="switchFormLang('en')">English</button>
+      </div>
+
+      <!-- Uzbek fields -->
+      <div id="form-uz" class="space-y-3">
+        <div>
+          <label class="text-xs font-semibold mb-1.5 block" style="color:var(--text-muted)">Sarlavha (UZ)</label>
+          <input type="text" id="f-title-uz" class="field" placeholder="Yangilik sarlavhasi..." />
+        </div>
+        <div>
+          <label class="text-xs font-semibold mb-1.5 block" style="color:var(--text-muted)">Matn (UZ)</label>
+          <textarea id="f-desc-uz" class="field" placeholder="Yangilik matni..."></textarea>
+        </div>
+      </div>
+
+      <!-- Russian fields -->
+      <div id="form-ru" class="space-y-3 hidden">
+        <div>
+          <label class="text-xs font-semibold mb-1.5 block" style="color:var(--text-muted)">Заголовок (RU)</label>
+          <input type="text" id="f-title-ru" class="field" placeholder="Заголовок новости..." />
+        </div>
+        <div>
+          <label class="text-xs font-semibold mb-1.5 block" style="color:var(--text-muted)">Описание (RU)</label>
+          <textarea id="f-desc-ru" class="field" placeholder="Текст новости..."></textarea>
+        </div>
+      </div>
+
+      <!-- English fields -->
+      <div id="form-en" class="space-y-3 hidden">
+        <div>
+          <label class="text-xs font-semibold mb-1.5 block" style="color:var(--text-muted)">Title (EN)</label>
+          <input type="text" id="f-title-en" class="field" placeholder="News title..." />
+        </div>
+        <div>
+          <label class="text-xs font-semibold mb-1.5 block" style="color:var(--text-muted)">Description (EN)</label>
+          <textarea id="f-desc-en" class="field" placeholder="News body..."></textarea>
+        </div>
+      </div>
+
+      <!-- Date -->
+      <div>
+        <label class="text-xs font-semibold mb-1.5 block" style="color:var(--text-muted)">Sana / Date</label>
+        <input type="date" id="f-date" class="field" />
+      </div>
+
+      <!-- Image Upload -->
+      <div>
+        <label class="text-xs font-semibold mb-1.5 block" style="color:var(--text-muted)">Rasm / Image</label>
+        <input type="file" id="f-image" accept="image/*" class="field text-sm" onchange="handleImageUpload(this)" />
+        <img id="img-preview" alt="Preview" />
+        <p class="text-xs mt-1" style="color:var(--text-muted)">Max 5MB · JPG, PNG, GIF, WEBP</p>
+      </div>
+
+      <!-- Submit -->
+      <div class="flex gap-3 pt-2">
+        <button type="submit" id="form-submit-btn" class="btn-accent flex-1 py-3 rounded-xl text-sm flex items-center justify-center gap-2">
+          <i data-lucide="save" class="w-4 h-4"></i>
+          <span id="form-submit-label" data-i18n="btn_save">Saqlash</span>
+        </button>
+        <button type="button" onclick="closeNewsModal()" class="btn-ghost px-5 py-3 rounded-xl text-sm" data-i18n="btn_cancel">
+          Bekor
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<!--  MODAL: CONFIRM DELETE                                                  -->
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<div id="delete-modal" class="modal-overlay" onclick="closeDeleteModal(event)">
+  <div class="modal-box" style="max-width:400px">
+    <div class="text-center mb-6">
+      <div class="w-14 h-14 rounded-full mx-auto mb-4 flex items-center justify-center" style="background:rgba(239,68,68,0.15)">
+        <i data-lucide="trash-2" class="w-6 h-6 text-red-400"></i>
+      </div>
+      <h3 class="text-xl font-bold mb-2" style="color:var(--text)" data-i18n="del_title">O'chirishni tasdiqlang</h3>
+      <p class="text-sm" style="color:var(--text-muted)" data-i18n="del_sub">Bu amalni qaytarib bo'lmaydi.</p>
+    </div>
+    <div class="flex gap-3">
+      <button id="confirm-delete-btn"
+        class="flex-1 py-3 rounded-xl text-sm font-semibold bg-red-500 text-white hover:bg-red-600 transition-colors">
+        <span data-i18n="btn_delete">O'chirish</span>
+      </button>
+      <button onclick="closeDeleteModal()" class="btn-ghost flex-1 py-3 rounded-xl text-sm" data-i18n="btn_cancel">
+        Bekor
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<!--  JAVASCRIPT                                                             -->
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<script>
+/* ─────────────────────────────────────────────────────────────────────────
+   CONFIG
+───────────────────────────────────────────────────────────────────────── */
+const API_BASE = "http://localhost:3001";
+
+/* ─────────────────────────────────────────────────────────────────────────
+   TRANSLATIONS
+───────────────────────────────────────────────────────────────────────── */
+const T = {
+  uz: {
+    nav_news: "Yangiliklar", nav_about: "Haqida", nav_contact: "Aloqa",
+    hero_tag: "Qamashi tumani • Yoshlar portali",
+    hero_title: "Yoshlarni Kelajakka ulash",
+    hero_sub: "Qamashi tumanining rasmiy yoshlar axborot portali — yangiliklar, imkoniyatlar va tadbirlar.",
+    btn_news: "Yangiliklar", btn_admin: "Admin Panel",
+    stat_news: "Yangiliklar", stat_langs: "Tillar", stat_access: "Ishlash vaqti", stat_year: "Yil",
+    section_news: "So'nggi Yangiliklar",
+    search_placeholder: "Qidirish...",
+    btn_add: "Qo'shish", btn_login: "Kirish",
+    login_title: "Admin Kirish", login_sub: "Parolni kiriting",
+    login_pass_label: "Parol", login_pass_ph: "••••••••",
+    btn_login_submit: "Kirish", login_error: "Noto'g'ri parol",
+    modal_add: "Yangilik Qo'shish", modal_edit: "Yangilikni Tahrirlash",
+    btn_save: "Saqlash", btn_cancel: "Bekor",
+    del_title: "O'chirishni tasdiqlang", del_sub: "Bu amalni qaytarib bo'lmaydi.",
+    btn_delete: "O'chirish",
+    about_title: "Portal Haqida",
+    about_p1: "Qamashi Yoshlar Portali — tuman yoshlarini bir platformada birlashtirish uchun yaratilgan zamonaviy axborot tizimi.",
+    about_p2: "Portalda eng so'nggi yangiliklar, imkoniyatlar, o'quv kurslari va yoshlar hayotiga oid barcha zaruriy ma'lumotlar jamlangan.",
+    feat_fast: "Tez va ishonchli", feat_fast_d: "Real vaqtda yangilanib turadi",
+    feat_lang: "Ko'p tilli", feat_lang_d: "O'zbek, Rus, Ingliz tillarida",
+    feat_sec: "Xavfsiz", feat_sec_d: "JWT autentifikatsiya bilan himoyalangan",
+    feat_mob: "Mobil qulay", feat_mob_d: "Barcha qurilmalarda mukammal",
+    contact_title: "Aloqa", contact_sub: "Murojaat uchun quyidagi kanallar orqali bog'laning",
+    contact_addr: "Qamashi tumani, Qashqadaryo viloyati",
+    footer_built: "Ishlab chiqildi", footer_by: "Qamashi tumani uchun",
+    no_news: "Yangiliklar topilmadi", no_news_sub: "Hozircha yangiliklar yo'q yoki qidiruv natijasi bo'sh.",
+    read_more: "Batafsil", btn_edit: "Tahrir", admin_logout: "Chiqish",
+    server_err: "Server bilan ulanib bo'lmadi. Backend ishlaydimi?",
+    add_success: "Yangilik muvaffaqiyatli qo'shildi!",
+    edit_success: "Yangilik muvaffaqiyatli yangilandi!",
+    del_success: "Yangilik o'chirildi.",
+    login_success: "Admin panelga xush kelibsiz!"
+  },
+  ru: {
+    nav_news: "Новости", nav_about: "О нас", nav_contact: "Контакты",
+    hero_tag: "Камашинский район • Молодёжный портал",
+    hero_title: "Соединяем молодёжь с Будущим",
+    hero_sub: "Официальный молодёжный портал Камашинского района — новости, возможности и мероприятия.",
+    btn_news: "Новости", btn_admin: "Панель Админа",
+    stat_news: "Новостей", stat_langs: "Языков", stat_access: "Режим работы", stat_year: "Год",
+    section_news: "Последние Новости",
+    search_placeholder: "Поиск...",
+    btn_add: "Добавить", btn_login: "Войти",
+    login_title: "Вход Администратора", login_sub: "Введите пароль",
+    login_pass_label: "Пароль", login_pass_ph: "••••••••",
+    btn_login_submit: "Войти", login_error: "Неверный пароль",
+    modal_add: "Добавить Новость", modal_edit: "Редактировать Новость",
+    btn_save: "Сохранить", btn_cancel: "Отмена",
+    del_title: "Подтвердите удаление", del_sub: "Это действие нельзя отменить.",
+    btn_delete: "Удалить",
+    about_title: "О Портале",
+    about_p1: "Молодёжный портал Камаши — современная информационная система для объединения молодёжи района.",
+    about_p2: "На портале собраны последние новости, возможности, учебные курсы и вся необходимая информация.",
+    feat_fast: "Быстро и надёжно", feat_fast_d: "Обновляется в реальном времени",
+    feat_lang: "Многоязычный", feat_lang_d: "На узбекском, русском, английском",
+    feat_sec: "Безопасно", feat_sec_d: "Защищено JWT-аутентификацией",
+    feat_mob: "Мобильный", feat_mob_d: "Идеально на всех устройствах",
+    contact_title: "Контакты", contact_sub: "Свяжитесь с нами по следующим каналам",
+    contact_addr: "Камашинский район, Кашкадарьинская область",
+    footer_built: "Разработано", footer_by: "для Камашинского района",
+    no_news: "Новости не найдены", no_news_sub: "Пока новостей нет или поиск не дал результатов.",
+    read_more: "Подробнее", btn_edit: "Изменить", admin_logout: "Выйти",
+    server_err: "Не удалось подключиться к серверу. Запущен ли бэкенд?",
+    add_success: "Новость успешно добавлена!",
+    edit_success: "Новость успешно обновлена!",
+    del_success: "Новость удалена.",
+    login_success: "Добро пожаловать в панель администратора!"
+  },
+  en: {
+    nav_news: "News", nav_about: "About", nav_contact: "Contact",
+    hero_tag: "Qamashi District • Youth Portal",
+    hero_title: "Connecting Youth to the Future",
+    hero_sub: "The official youth information portal of Qamashi district — news, opportunities and events.",
+    btn_news: "News", btn_admin: "Admin Panel",
+    stat_news: "Articles", stat_langs: "Languages", stat_access: "Uptime", stat_year: "Year",
+    section_news: "Latest News",
+    search_placeholder: "Search...",
+    btn_add: "Add News", btn_login: "Login",
+    login_title: "Admin Login", login_sub: "Enter your password",
+    login_pass_label: "Password", login_pass_ph: "••••••••",
+    btn_login_submit: "Log In", login_error: "Incorrect password",
+    modal_add: "Add News", modal_edit: "Edit News",
+    btn_save: "Save", btn_cancel: "Cancel",
+    del_title: "Confirm Deletion", del_sub: "This action cannot be undone.",
+    btn_delete: "Delete",
+    about_title: "About the Portal",
+    about_p1: "The Qamashi Youth Portal is a modern information system built to unite district youth on one platform.",
+    about_p2: "The portal brings together the latest news, opportunities, training courses, and all necessary information for youth.",
+    feat_fast: "Fast & Reliable", feat_fast_d: "Updates in real time",
+    feat_lang: "Multilingual", feat_lang_d: "In Uzbek, Russian, and English",
+    feat_sec: "Secure", feat_sec_d: "Protected with JWT authentication",
+    feat_mob: "Mobile Friendly", feat_mob_d: "Perfect on all devices",
+    contact_title: "Contact", contact_sub: "Reach us through the following channels",
+    contact_addr: "Qamashi District, Kashkadarya Region",
+    footer_built: "Built with", footer_by: "for Qamashi District",
+    no_news: "No news found", no_news_sub: "There are no articles yet, or your search returned no results.",
+    read_more: "Read More", btn_edit: "Edit", admin_logout: "Logout",
+    server_err: "Cannot connect to server. Is the backend running?",
+    add_success: "News added successfully!",
+    edit_success: "News updated successfully!",
+    del_success: "News deleted.",
+    login_success: "Welcome to the admin panel!"
+  }
+};
+
+/* ─────────────────────────────────────────────────────────────────────────
+   STATE
+───────────────────────────────────────────────────────────────────────── */
+let state = {
+  lang:    localStorage.getItem("lang")  || "uz",
+  theme:   localStorage.getItem("theme") || "dark",
+  token:   localStorage.getItem("jwt")   || null,
+  news:    [],
+  filtered: [],
+  deleteTarget: null,
+  formImage: null,   // Base64 string
+  formLang: "uz"
+};
+
+/* ─────────────────────────────────────────────────────────────────────────
+   INIT
+───────────────────────────────────────────────────────────────────────── */
+document.addEventListener("DOMContentLoaded", () => {
+  // Apply saved theme
+  applyTheme(state.theme);
+
+  // Apply saved language
+  applyLang(state.lang);
+
+  // Init AOS
+  AOS.init({ duration: 600, once: true, easing: "ease-out-cubic", offset: 60 });
+
+  // Init Lucide icons
+  lucide.createIcons();
+
+  // Restore auth state
+  if (state.token) updateAuthUI(true);
+
+  // Fetch news from backend
+  fetchNews();
+
+  // Set today's date in form
+  document.getElementById("f-date").value = new Date().toISOString().split("T")[0];
+});
+
+/* ─────────────────────────────────────────────────────────────────────────
+   THEME
+───────────────────────────────────────────────────────────────────────── */
+function applyTheme(theme) {
+  const root   = document.documentElement;
+  const toggle = document.getElementById("theme-toggle");
+  const thumb  = toggle.querySelector(".theme-thumb");
+
+  if (theme === "dark") {
+    root.classList.add("dark");
+    toggle.classList.add("dark-on");
+    thumb.textContent = "🌙";
+  } else {
+    root.classList.remove("dark");
+    toggle.classList.remove("dark-on");
+    thumb.textContent = "☀️";
+  }
+  state.theme = theme;
+  localStorage.setItem("theme", theme);
+}
+
+document.getElementById("theme-toggle").addEventListener("click", () => {
+  applyTheme(state.theme === "dark" ? "light" : "dark");
+});
+
+/* ─────────────────────────────────────────────────────────────────────────
+   LANGUAGE
+───────────────────────────────────────────────────────────────────────── */
+function applyLang(lang) {
+  state.lang = lang;
+  localStorage.setItem("lang", lang);
+
+  // Update pill buttons
+  document.querySelectorAll(".lang-pill").forEach(b => {
+    b.classList.toggle("active", b.dataset.lang === lang);
+  });
+
+  // Update all data-i18n elements
+  document.querySelectorAll("[data-i18n]").forEach(el => {
+    const key = el.dataset.i18n;
+    if (T[lang][key] !== undefined) el.textContent = T[lang][key];
+  });
+
+  // Update placeholders
+  document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
+    const key = el.dataset.i18nPlaceholder;
+    if (T[lang][key] !== undefined) el.placeholder = T[lang][key];
+  });
+
+  // Re-render news with new language
+  if (state.news.length) renderNews(state.filtered.length ? state.filtered : state.news);
+}
+
+document.querySelectorAll(".lang-pill").forEach(btn => {
+  btn.addEventListener("click", () => applyLang(btn.dataset.lang));
+});
+
+/* ─────────────────────────────────────────────────────────────────────────
+   API HELPERS
+───────────────────────────────────────────────────────────────────────── */
+async function apiFetch(path, options = {}) {
+  const headers = { "Content-Type": "application/json", ...options.headers };
+  if (state.token) headers["Authorization"] = `Bearer ${state.token}`;
+
+  try {
+    const res = await fetch(`${API_BASE}${path}`, { ...options, headers });
+    const json = await res.json();
+    if (!res.ok) throw new Error(json.message || `HTTP ${res.status}`);
+    return json;
+  } catch (err) {
+    if (err.message.includes("fetch") || err.message.includes("NetworkError") || err.name === "TypeError") {
+      showToast(T[state.lang].server_err, "error");
+    }
+    throw err;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   FETCH & RENDER NEWS
+───────────────────────────────────────────────────────────────────────── */
+async function fetchNews() {
+  try {
+    const data = await apiFetch("/api/news");
+    state.news = data.data || [];
+    state.filtered = [];
+
+    // Update stat counter with animation
+    const statEl = document.getElementById("stat-news");
+    animateCount(statEl, state.news.length);
+
+    renderNews(state.news);
+  } catch (_) {
+    // Error already toasted by apiFetch
+    renderNews([]);
+  }
+}
+
+function animateCount(el, target) {
+  let current = 0;
+  const step  = Math.max(1, Math.ceil(target / 20));
+  const timer = setInterval(() => {
+    current = Math.min(current + step, target);
+    el.textContent = current;
+    if (current >= target) clearInterval(timer);
+  }, 50);
+}
+
+function getNewsField(item, field) {
+  const lang = state.lang;
+  return item[`${field}_${lang}`] || item[`${field}_uz`] || item[`${field}_en`] || "";
+}
+
+function formatDate(dateStr) {
+  if (!dateStr) return "";
+  try {
+    return new Date(dateStr).toLocaleDateString(
+      state.lang === "ru" ? "ru-RU" : state.lang === "en" ? "en-US" : "uz-UZ",
+      { year: "numeric", month: "short", day: "numeric" }
+    );
+  } catch { return dateStr; }
+}
+
+function renderNews(items) {
+  const grid  = document.getElementById("news-grid");
+  const isAdmin = !!state.token;
+  const lang = state.lang;
+
+  if (!items.length) {
+    grid.innerHTML = `
+      <div class="empty-state" data-aos="fade-up">
+        <div class="text-5xl mb-4">📭</div>
+        <h3 class="text-lg font-semibold mb-2" style="color:var(--text)">${T[lang].no_news}</h3>
+        <p class="text-sm" style="color:var(--text-muted)">${T[lang].no_news_sub}</p>
+      </div>`;
+    lucide.createIcons();
+    return;
+  }
+
+  grid.innerHTML = items.map((item, i) => {
+    const title = getNewsField(item, "title");
+    const desc  = getNewsField(item, "desc");
+    const imgEl = item.image
+      ? `<img src="${item.image}" alt="${title}" class="news-card-img" style="height:180px;width:100%;object-fit:cover" />`
+      : `<div class="news-card-img text-4xl">${getEmoji(i)}</div>`;
+
+    const adminButtons = isAdmin ? `
+      <div class="flex gap-2 mt-3 pt-3" style="border-top:1px solid var(--border)">
+        <button onclick="openEditModal(${item.id})"
+          class="btn-ghost flex-1 py-1.5 rounded-lg text-xs flex items-center justify-center gap-1.5 hover:border-[var(--accent)] hover:text-[var(--accent)]">
+          <i data-lucide="pencil" class="w-3 h-3"></i>${T[lang].btn_edit}
+        </button>
+        <button onclick="openDeleteModal(${item.id})"
+          class="flex-1 py-1.5 rounded-lg text-xs flex items-center justify-center gap-1.5 border transition-colors"
+          style="border-color:rgba(239,68,68,0.3);color:#f87171;background:transparent"
+          onmouseover="this.style.background='rgba(239,68,68,0.1)'"
+          onmouseout="this.style.background='transparent'">
+          <i data-lucide="trash-2" class="w-3 h-3"></i>${T[lang].btn_delete}
+        </button>
+      </div>` : "";
+
+    return `
+      <div class="news-card glass" data-aos="fade-up" data-aos-delay="${Math.min(i * 60, 300)}">
+        ${imgEl}
+        <div class="p-5">
+          <div class="flex items-center gap-2 mb-3">
+            <span class="news-date-tag">
+              <i data-lucide="calendar" class="w-3 h-3"></i>${formatDate(item.date)}
+            </span>
+          </div>
+          <h3 class="font-bold text-base leading-snug mb-2 line-clamp-2" style="color:var(--text)">${title}</h3>
+          <p class="text-sm leading-relaxed line-clamp-3" style="color:var(--text-muted)">${desc}</p>
+          ${adminButtons}
+        </div>
+      </div>`;
+  }).join("");
+
+  // Re-init AOS and Lucide for dynamically added elements
+  AOS.refresh();
+  lucide.createIcons();
+}
+
+function getEmoji(index) {
+  const emojis = ["📰","🌟","🎓","🏆","🚀","🎯","💡","🤝","🌱","🏅"];
+  return emojis[index % emojis.length];
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   SEARCH / FILTER
+───────────────────────────────────────────────────────────────────────── */
+function filterNews() {
+  const q = document.getElementById("search-input").value.trim().toLowerCase();
+  if (!q) {
+    state.filtered = [];
+    renderNews(state.news);
+    return;
+  }
+  state.filtered = state.news.filter(item => {
+    const title = getNewsField(item, "title").toLowerCase();
+    const desc  = getNewsField(item, "desc").toLowerCase();
+    return title.includes(q) || desc.includes(q);
+  });
+  renderNews(state.filtered);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   AUTH
+───────────────────────────────────────────────────────────────────────── */
+function openLoginModal() {
+  if (state.token) { doLogout(); return; }
+  document.getElementById("login-modal").classList.add("open");
+  setTimeout(() => document.getElementById("login-password").focus(), 300);
+}
+
+function closeLoginModal(e) {
+  if (e && e.target !== document.getElementById("login-modal")) return;
+  document.getElementById("login-modal").classList.remove("open");
+  document.getElementById("login-password").value = "";
+  document.getElementById("login-error").classList.add("hidden");
+}
+
+async function doLogin() {
+  const pw  = document.getElementById("login-password").value;
+  const btn = document.getElementById("login-submit");
+
+  if (!pw) return;
+
+  // Loading state
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner"></div>';
+
+  try {
+    const data = await apiFetch("/api/login", {
+      method: "POST",
+      body: JSON.stringify({ password: pw })
+    });
+
+    state.token = data.token;
+    localStorage.setItem("jwt", data.token);
+
+    document.getElementById("login-modal").classList.remove("open");
+    updateAuthUI(true);
+    showToast(T[state.lang].login_success, "success");
+    renderNews(state.filtered.length ? state.filtered : state.news);
+
+  } catch (err) {
+    document.getElementById("login-error").classList.remove("hidden");
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = `<i data-lucide="log-in" class="w-4 h-4"></i><span>${T[state.lang].btn_login_submit}</span>`;
+    lucide.createIcons();
+  }
+}
+
+function doLogout() {
+  state.token = null;
+  localStorage.removeItem("jwt");
+  updateAuthUI(false);
+  renderNews(state.filtered.length ? state.filtered : state.news);
+  showToast("Logged out.", "info");
+}
+
+function updateAuthUI(isAdmin) {
+  const authArea = document.getElementById("auth-area");
+  const addBtn   = document.getElementById("add-news-btn");
+
+  if (isAdmin) {
+    authArea.innerHTML = `
+      <div class="flex items-center gap-2">
+        <span class="admin-badge"><i data-lucide="shield-check" class="w-3 h-3"></i>ADMIN</span>
+        <button onclick="doLogout()" class="btn-ghost text-xs px-3 py-1.5 rounded-lg flex items-center gap-1.5">
+          <i data-lucide="log-out" class="w-3 h-3"></i>
+          <span>${T[state.lang].admin_logout}</span>
+        </button>
+      </div>`;
+    addBtn.classList.remove("hidden");
+    addBtn.classList.add("flex");
+  } else {
+    authArea.innerHTML = `
+      <button id="admin-login-btn" class="btn-ghost text-xs px-3 py-1.5 rounded-lg flex items-center gap-1.5" onclick="openLoginModal()">
+        <i data-lucide="lock" class="w-3 h-3"></i>
+        <span>${T[state.lang].btn_login}</span>
+      </button>`;
+    addBtn.classList.add("hidden");
+    addBtn.classList.remove("flex");
+  }
+  lucide.createIcons();
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   NEWS FORM MODAL
+───────────────────────────────────────────────────────────────────────── */
+function openNewsModal(item = null) {
+  const isEdit = !!item;
+  const lang   = state.lang;
+
+  // Title
+  document.getElementById("news-modal-title").textContent = isEdit ? T[lang].modal_edit : T[lang].modal_add;
+
+  // Reset form
+  document.getElementById("news-form").reset();
+  document.getElementById("form-id").value = isEdit ? item.id : "";
+  document.getElementById("img-preview").classList.remove("visible");
+  state.formImage = null;
+  switchFormLang("uz");
+
+  if (isEdit) {
+    document.getElementById("f-title-uz").value = item.title_uz || "";
+    document.getElementById("f-title-ru").value = item.title_ru || "";
+    document.getElementById("f-title-en").value = item.title_en || "";
+    document.getElementById("f-desc-uz").value  = item.desc_uz  || "";
+    document.getElementById("f-desc-ru").value  = item.desc_ru  || "";
+    document.getElementById("f-desc-en").value  = item.desc_en  || "";
+    document.getElementById("f-date").value     = item.date     || "";
+    state.formImage = item.image || null;
+    if (item.image) {
+      const prev = document.getElementById("img-preview");
+      prev.src = item.image;
+      prev.classList.add("visible");
+    }
+  } else {
+    document.getElementById("f-date").value = new Date().toISOString().split("T")[0];
+  }
+
+  document.getElementById("news-modal").classList.add("open");
+}
+
+function openEditModal(id) {
+  const item = state.news.find(n => n.id === id);
+  if (!item) return;
+  openNewsModal(item);
+}
+
+function closeNewsModal(e) {
+  if (e && e.target !== document.getElementById("news-modal")) return;
+  document.getElementById("news-modal").classList.remove("open");
+}
+
+function switchFormLang(lang) {
+  state.formLang = lang;
+  ["uz","ru","en"].forEach(l => {
+    document.getElementById(`form-${l}`).classList.toggle("hidden", l !== lang);
+  });
+  document.querySelectorAll(".form-lang-btn").forEach(b => {
+    b.classList.toggle("active", b.dataset.formLang === lang);
+  });
+}
+
+function handleImageUpload(input) {
+  const file = input.files[0];
+  if (!file) return;
+  if (file.size > 5 * 1024 * 1024) {
+    showToast("Image must be smaller than 5MB", "error");
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    state.formImage = e.target.result;
+    const prev = document.getElementById("img-preview");
+    prev.src = e.target.result;
+    prev.classList.add("visible");
+  };
+  reader.readAsDataURL(file);
+}
+
+async function submitNewsForm(e) {
+  e.preventDefault();
+  const id     = document.getElementById("form-id").value;
+  const isEdit = !!id;
+  const btn    = document.getElementById("form-submit-btn");
+  const lang   = state.lang;
+
+  const payload = {
+    title_uz: document.getElementById("f-title-uz").value.trim(),
+    title_ru: document.getElementById("f-title-ru").value.trim(),
+    title_en: document.getElementById("f-title-en").value.trim(),
+    desc_uz:  document.getElementById("f-desc-uz").value.trim(),
+    desc_ru:  document.getElementById("f-desc-ru").value.trim(),
+    desc_en:  document.getElementById("f-desc-en").value.trim(),
+    date:     document.getElementById("f-date").value,
+    image:    state.formImage
+  };
+
+  if (!payload.title_uz && !payload.title_en && !payload.title_ru) {
+    showToast("Please add at least one title.", "error"); return;
+  }
+  if (!payload.date) { showToast("Date is required.", "error"); return; }
+
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner"></div>';
+
+  try {
+    if (isEdit) {
+      await apiFetch(`/api/news/${id}`, { method: "PUT", body: JSON.stringify(payload) });
+      showToast(T[lang].edit_success, "success");
+    } else {
+      await apiFetch("/api/news", { method: "POST", body: JSON.stringify(payload) });
+      showToast(T[lang].add_success, "success");
+    }
+    closeNewsModal();
+    await fetchNews();
+  } catch (_) {
+    // Error already toasted
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = `<i data-lucide="save" class="w-4 h-4"></i><span>${T[lang].btn_save}</span>`;
+    lucide.createIcons();
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   DELETE MODAL
+───────────────────────────────────────────────────────────────────────── */
+function openDeleteModal(id) {
+  state.deleteTarget = id;
+  document.getElementById("delete-modal").classList.add("open");
+
+  document.getElementById("confirm-delete-btn").onclick = async () => {
+    try {
+      await apiFetch(`/api/news/${state.deleteTarget}`, { method: "DELETE" });
+      showToast(T[state.lang].del_success, "success");
+      closeDeleteModal();
+      await fetchNews();
+    } catch (_) {}
+  };
+}
+
+function closeDeleteModal(e) {
+  if (e && e.target !== document.getElementById("delete-modal")) return;
+  document.getElementById("delete-modal").classList.remove("open");
+  state.deleteTarget = null;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   TOAST NOTIFICATIONS
+───────────────────────────────────────────────────────────────────────── */
+function showToast(message, type = "info") {
+  const container = document.getElementById("toast-container");
+  const icons = { success: "✅", error: "❌", info: "ℹ️" };
+
+  const toast = document.createElement("div");
+  toast.className = `toast ${type}`;
+  toast.innerHTML = `<span>${icons[type]}</span><span>${message}</span>`;
+  container.appendChild(toast);
+
+  setTimeout(() => {
+    toast.classList.add("out");
+    toast.addEventListener("animationend", () => toast.remove());
+  }, 4000);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   KEYBOARD SHORTCUTS
+───────────────────────────────────────────────────────────────────────── */
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    document.getElementById("login-modal").classList.remove("open");
+    document.getElementById("news-modal").classList.remove("open");
+    document.getElementById("delete-modal").classList.remove("open");
+  }
+});
+
+/* ─────────────────────────────────────────────────────────────────────────
+   SMOOTH SCROLL
+───────────────────────────────────────────────────────────────────────── */
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener("click", (e) => {
+    e.preventDefault();
+    const target = document.querySelector(anchor.getAttribute("href"));
+    if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+});
+</script>
+</body>
+</html>
