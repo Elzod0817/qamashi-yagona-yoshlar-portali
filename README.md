@@ -241,3 +241,4 @@ pm2 startup
 
 MIT — Free to use and modify for Qamashi District community projects.
 # Qamashi-yoshlar-portali
+# qamashi-yagona-yoshlar-portali
