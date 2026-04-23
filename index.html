@@ -463,7 +463,7 @@
 
     <!-- Logo -->
 <a href="/" class="flex items-center gap-3 flex-shrink-0 group">
-    <img src="https://gov.uz/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fgerb_in.8de8c8a8.png&w=256&q=75" 
+    <img id="secret-logo" src="https://gov.uz/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fgerb_in.8de8c8a8.png&w=256&q=75" 
          alt="Gerb" 
          class="w-11 h-11 object-contain transition-transform duration-300 group-hover:scale-110">
     
@@ -498,6 +498,7 @@
       <!-- Admin Login / Logout -->
       <div id="auth-area">
         <button id="admin-login-btn"
+          style="display: none;"
           class="btn-ghost text-xs px-3 py-1.5 rounded-lg flex items-center gap-1.5"
           onclick="openLoginModal()">
           <i data-lucide="lock" class="w-3 h-3"></i>
@@ -531,7 +532,7 @@
           <i data-lucide="newspaper" class="w-4 h-4"></i>
           <span data-i18n="btn_news">Yangiliklar</span>
         </a>
-        <button onclick="openLoginModal()" class="btn-ghost px-6 py-3 rounded-xl text-sm flex items-center gap-2">
+        <button onclick="openLoginModal()" style="display: none;" class="btn-ghost px-6 py-3 rounded-xl text-sm flex items-center gap-2">
           <i data-lucide="shield" class="w-4 h-4"></i>
           <span data-i18n="btn_admin">Admin Panel</span>
         </button>
@@ -1482,6 +1483,33 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
   });
 });
+</script>
+<script>
+// Kompyuter uchun: Alt + A
+document.addEventListener('keydown', function(event) {
+    if (event.altKey && event.code === 'KeyA') {
+        event.preventDefault();
+        openLoginModal();
+    }
+});
+
+// Telefon uchun: Gerbni 5 marta bosish
+let clickCount = 0;
+let clickTimer;
+const logoImg = document.getElementById('secret-logo');
+
+if (logoImg) {
+    logoImg.addEventListener('click', function() {
+        clickCount++;
+        clearTimeout(clickTimer);
+        clickTimer = setTimeout(() => { clickCount = 0; }, 2000);
+
+        if (clickCount === 5) {
+            clickCount = 0;
+            openLoginModal();
+        }
+    });
+}
 </script>
 </body>
 </html>
